@@ -6,4 +6,4 @@ build:
 .PHONY: release	
 # Build release
 release:
-	@goreleaser release --rm-dist -f app/.goreleaser.yaml
+	@goreleaser release --rm-dist -f .goreleaser.yaml
