@@ -1,0 +1,57 @@
+project_name: arktos-venture/golang-template
+before:
+  hooks:
+    - go mod tidy -compat=1.17
+gomod:
+  proxy: false
+  env:
+    - GOPRIVATE=github.com/arktos-venture
+builds:
+  - id: example
+    main: ./
+    binary: go
+    ldflags: -s -w -X main.build={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=0
+
+dockers:
+  - image_templates:
+      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/example:{{ .Version }}"
+      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/example:{{ .Major }}"
+      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/example:latest"
+    dockerfile: Dockerfile
+    ids:
+      - example
+    build_flag_templates:
+      - --label=org.opencontainers.image.title=example
+      - --label=org.opencontainers.image.description=Example
+      - --label=org.opencontainers.image.authors=Aurelien Perrier <aperrier@universe.sh>
+      - --label=org.opencontainers.image.source=https://github.com/arktos-venture/grpc-apis
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
+    format: binary
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+release:
+  disable: true
+  draft: true
+  prerelease: auto
+  name_template: "{{.ProjectName}}-v{{.Version}}"
+  github:  
