@@ -13,8 +13,9 @@ import (
 )
 
 var (
-	logger hclog.Logger   = hclog.Default()
-	cfg    *config.Config = config.DefaultConfig
+	logger  hclog.Logger   = hclog.Default()
+	cfg     *config.Config = config.DefaultConfig
+	Version string         = "unknown"
 )
 
 func init() {
@@ -32,7 +33,8 @@ func init() {
 		}
 	}
 
-	if cfg.Socket.Listen == "" || cfg.Socket.Destination == "" {
+	if (cfg.Socket.Listen.Address == "" || cfg.Socket.Listen.Protocol == "") ||
+		(cfg.Socket.Destination.Address == "" || cfg.Socket.Destination.Protocol == "") {
 		logger.Error("listen or destination is empty")
 		os.Exit(1)
 	}
@@ -54,11 +56,11 @@ func main() {
 		os.Exit(1)
 	}()
 
-	log.With("version", "").Info("starting")
+	log.With("version", Version).Info("starting")
 
 	// Prometheus metrics & debug http server
 	g.Go(func() error { return HTTP(log, cfg.Health) })
-	g.Go(func() error { return SockTCP(log, cfg.Socket) })
+	g.Go(func() error { return Sock(log, cfg.Socket) })
 
 	g.Wait()
 }

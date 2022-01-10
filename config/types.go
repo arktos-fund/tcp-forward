@@ -8,9 +8,14 @@ type LogOptions struct {
 	Format string `yaml:"format,omitempty"`
 }
 
+type SockAddress struct {
+	Protocol string `yaml:"protocol,omitempty"`
+	Address  string `yaml:"address,omitempty"`
+}
+
 type Socket struct {
-	Listen      string        `yaml:"listen,omitempty"`
-	Destination string        `yaml:"destination,omitempty"`
+	Listen      SockAddress   `yaml:"listen,omitempty"`
+	Destination SockAddress   `yaml:"destination,omitempty"`
 	Timeout     time.Duration `yaml:"timeout,omitempty"`
 }
 
