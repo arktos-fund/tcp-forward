@@ -1,4 +1,4 @@
-project_name: arktos-venture/tcp-forward
+project_name: arktos-venture
 before:
   hooks:
     - go mod tidy
@@ -20,9 +20,9 @@ builds:
 
 dockers:
   - image_templates:
-      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/tcp-forward:{{ .Version }}"
-      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/tcp-forward:{{ .Major }}"
-      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/tcp-forward:latest"
+      - "quay.io/{{ .ProjectName }}/tcp-forward:{{ .Version }}"
+      - "quay.io/{{ .ProjectName }}/tcp-forward:{{ .Major }}"
+      - "quay.io/{{ .ProjectName }}/tcp-forward:latest"
     dockerfile: Dockerfile
     ids:
       - forward
