@@ -1,0 +1,11 @@
+---
+logOptions:
+  level: info
+  format: json
+socket:
+  listen: 0.0.0.0:5001
+  destination: 127.0.0.1:4002
+  timeout: 3s
+health:
+  listen: 0.0.0.0:3000
+  timeout: 3s
