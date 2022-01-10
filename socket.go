@@ -43,7 +43,7 @@ func fwd(logger hclog.Logger, src net.Conn) error {
 
 	if dst, err = net.Dial("tcp", cfg.Socket.Destination); err != nil {
 		log.With("error", err, "sock", cfg.Socket.Destination).Error("tcp dial failed")
-		return err
+		os.Exit(1)
 	}
 
 	done := make(chan struct{})
