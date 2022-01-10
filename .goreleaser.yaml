@@ -1,13 +1,13 @@
-project_name: arktos-venture/golang-template
+project_name: arktos-venture/tcp-forward
 before:
   hooks:
-    - go mod tidy -compat=1.17
+    - go mod tidy
 gomod:
   proxy: false
   env:
     - GOPRIVATE=github.com/arktos-venture
 builds:
-  - id: example
+  - id: forward
     main: ./
     binary: go
     ldflags: -s -w -X main.build={{.Version}}
@@ -20,17 +20,17 @@ builds:
 
 dockers:
   - image_templates:
-      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/example:{{ .Version }}"
-      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/example:{{ .Major }}"
-      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/example:latest"
+      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/tcp-forward:{{ .Version }}"
+      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/tcp-forward:{{ .Major }}"
+      - "rg.fr-par.scw.cloud/{{ .ProjectName }}/tcp-forward:latest"
     dockerfile: Dockerfile
     ids:
-      - example
+      - forward
     build_flag_templates:
-      - --label=org.opencontainers.image.title=example
-      - --label=org.opencontainers.image.description=Example
-      - --label=org.opencontainers.image.authors=Aurelien Perrier <aperrier@universe.sh>
-      - --label=org.opencontainers.image.source=https://github.com/arktos-venture/grpc-apis
+      - --label=org.opencontainers.image.title=tcp-forward
+      - --label=org.opencontainers.image.description=tcp-forward
+      - --label=org.opencontainers.image.authors=Aurelien Perrier <aperrier@arktos-consulting.cloud>
+      - --label=org.opencontainers.image.source=https://github.com/arktos-venture/tcp-forward
       - --label=org.opencontainers.image.version={{ .Version }}
       - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
       - --label=org.opencontainers.image.revision={{ .FullCommit }}

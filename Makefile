@@ -1,9 +1,4 @@
-.PHONY: build-all
-# Build all images
-build-all:
-	@goreleaser release --snapshot --skip-publish --rm-dist -f .goreleaser.yaml
-
-.PHONY: build/%	
+.PHONY: build
 # Build dev
-build/%:
+build:
 	@goreleaser release --snapshot --skip-publish --rm-dist -f .goreleaser.yaml
