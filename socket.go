@@ -9,28 +9,29 @@ import (
 	"github.com/hashicorp/go-hclog"
 )
 
-func Sock(logger hclog.Logger, c config.Socket) error {
+func Sock(logger hclog.Logger, cfg config.Socket) error {
 	var (
 		log hclog.Logger = logger.Named("sock")
 		l   net.Listener
 		err error
 	)
 
-	log.With("sock", c.Listen).Info("start sock")
-	if l, err = net.Listen(c.Listen.Protocol, c.Listen.Address); err != nil {
-		log.With("error", err, "sock", c.Listen).Error("failed to open socket")
+	log.With("sock", cfg.Listen).Info("start sock")
+	if l, err = net.Listen(cfg.Listen.Protocol, cfg.Listen.Address); err != nil {
+		log.With("error", err, "sock", cfg.Listen).Error("failed to open socket")
 		os.Exit(1)
 	}
 
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			log.With("error", err, "protocol", c.Listen.Protocol, "address", c.Listen.Address).Warn("accept failed")
+			log.With("error", err, "protocol", cfg.Listen.Protocol, "address", cfg.Listen.Address).Warn("accept failed")
 			continue
 		}
 
-		log.With("client", conn.RemoteAddr().String()).Info("connected")
-		go fwd(log, c.Destination, conn)
+		if err = fwd(log, cfg.Destination, conn); err != nil {
+			log.With("error", err, "protocol", cfg.Destination.Protocol, "address", cfg.Destination.Address).Warn("dial failed")
+		}
 	}
 }
 
@@ -42,10 +43,10 @@ func fwd(logger hclog.Logger, cfg config.SockAddress, src net.Conn) error {
 	)
 
 	if dst, err = net.Dial(cfg.Protocol, cfg.Address); err != nil {
-		log.With("error", err, "protocol", cfg.Protocol, "address", cfg.Address).Error("dial failed")
-		os.Exit(1)
+		return err
 	}
 
+	log.With("client", src.RemoteAddr().String()).Info("connected")
 	done := make(chan struct{})
 
 	go func() {
